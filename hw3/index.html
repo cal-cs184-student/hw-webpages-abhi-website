@@ -94,30 +94,43 @@
 		</div>
 		
 		<h2>Part 2: Bounding Volume Hierarchy</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>
+		The BHV construction algorithm that we chose to use was a recursive algorithm that takes advantage of the different bounding boxes that we have for our primitives. By first checking if the primitive we want is even within our bounding box, we can remove unnecessary checks for ray intersections and continue on to the next bounding box. Our splitting heuristic is based on the x-coordinate of the centroids of each of the primitives and then accordingly sorting these coordinates so that we can construct a split such that we obtain some median for how we distribute the primitives and according to children. To expand on our recursive approach, we first attempt to find the child node, where once we have found a child node, we will look through all the primitives in that bounding box, and find an intersection. As we only look for intersections in the leaf nodes, we will have to find all the leaf nodes in the current bounding box in which the ray is intersecting and then determine if there is an intersection at that point. 
+		</p>
+		<p>
+			The images that I chose to compare my rendering times for included the dragon.dae file and the wall-e.dae file. For the dragon.dae file, my render without the BVH Acceleration took approximately 1000 seconds, whereas with the BHV acceleration, it took approximately .65 seconds. Similarly, for the wall-e file, which was more complex geometrically, it took nearly 1200 seconds to render while it took 1.85 seconds to render with the BVH acceleration. This is due to the implementation of the algorithm, which saves a significant amount of time not searching through every single ray traced in order to find an intersection, but rather, only looking into a bounding box if an intersection is found in the first place. Following this, we are able to take advantage of using the leaf nodes to find primitives with which the specific ray is intersecting, where we take into account the earliest ray that has been intersected. 
+
+		</p>
 
 		<h2>Part 3: Direct Illumination</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Direct lighting implementation: For the first direct lighting implementation without the importance sampling, I faced challenges in understanding when to switch between world-to-object and object-to-world spaces; however, I was able to better understand through seeing all the functions and what spaces they are defined in. For this implementation, I obtained a random sample in the hemisphere that points to a particular hit point in our coordinate space that might provide some radiance and therefore lighting to our object. By taking a set number of N samples, we only use this to provide an accumulation of all the possible lighting that can fall upon our hit point, aggregated and averaged using the Monte Carlo estimator. The reflectance equation we used consists of some terms to take into account such as our emitted bsdf and a cos term on the incident angle between the incoming and the outgoing rays. 
+
+		The logic for the direct light implementation with importance sampling was a little different in the sense that we now wanted to take account for when we directly hit a light source as we know that this lighting is of most significance to the lighting of our image. This was done so by first identifying if we have a direct light source, which would suffice if we use the logic from our previous function but using a different sample function geared towards the light source to obtain the emitted radiance, and then using our reflectance equation to obtain the radiance.  If it is not a direct light source, then we can take the average using the specified number of samples while still calculating with the same exact logic from the other conditional statement. This allows us to obtain an averaged value that when summed, gives us a significant value based on importance.
+		<p>
+			As we increase the light rays, the noise from the images decreases significantly as we are able to take account of more radiance within our image from the amount of light rays that we use to sample. This is specifically for the case of importance sampling. However, some noise still occurs due to the low number of samples used. 
+
+		</p>
+
+		<p>
+			Uniform vs Lighting: The differences between uniform vs lighting resides in the fact of the brightness of the image that we are viewing. Through uniform sampling, the averaging of N samples over rays sampled from anywhere in the hemisphere leads to the inclusion of radiance that does not provide any real contribution to the lighting of the image. There is still lighting in the image however due to the random sampling being from a source providing radiance. The lighting sampling provides a much better radiance as by directly sampling from light sources that have already been documented through provided variables from the starter code, we get a better radiance upon our object in the image. This is apparent when testing these differences on images such as the bunny.dae file which takes advantage of the light rays that are being sampled from the top of the image. 
+
+		</p>
+
+		
 
 		<h2>Part 4: Global Illumination</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Indirect Lighting Function: The indirect lighting function that we implemented uses a recursive approach to accumulate from the one_bounce_radiance and then up to N bounces (however, this number was subject to change after I implemented the Russian Roulette scheme). Using the function provided in our reference, we are able to calculate the sample_f function to calculate the BSDF from our current incoming and outgoing ray directions. Following this, we can use the same logic from our previous reflectance equation to calculate the value that needs to be added to our accumulation (only accumulated when the isAccumulated is designated and returned for the current reflectance if not designated), where the emission is now represented in the form of the value returned as a result of our recursive call to the at_least_one_bounce_radiance. The conditional we use to branch into our recursive call is executed when we intersect a surface or an object in our coordinate space. 
+
+		While my global illumination function was working at one point, I believe I made a change to my logic in BVH that altered the way that the rays were being recursively traced as I believed I no longer hit the primitives that were needed to enable this. This debugging process was extremely frustrating and even though at one point it was working, I was no longer able to figure it out, which explains the lack of images. My global illumination pictures are in my screenshots and down below as well. The reason I believe it stopped working is because the rays were not making an impact despite changing the number of the max ray depth. I don’t believe this was a logic issue in my one_bounce_radiance, but rather the BVH method which I was unable to find an issue, even though I am confident is in it as I was trying to isolate the issue. 
+
 
 		<h2>Part 5: Adaptive Sampling</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Adaptive Sampling: Adaptive sampling is used to determine once we have reached convergence for the calculated radiance for the pixel that we are currently sampling. This is important as it allows us to terminate our raytrace_pixel function early if we deem that there is no need to continue the process for the rest of the designated number of samples. I implemented adaptive sampling through the algorithm in the spec, where I calculated the mean and the standard deviation by summing up the illuminance for the designated value of s1 and s2. After finding the mean and standard deviation using these values, we can check to see if our I, which is used to measure our pixel convergence is below our max tolerance * mean to determine whether or not we want to terminate our process and then fill the sampleCountBuffer with the number of pixels used up to the point at which we terminated.
 
 		<h2>(Optional) Part 6: Extra Credit Opportunities</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 		
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
+		
 		</div>
 	</body>
 </html>
