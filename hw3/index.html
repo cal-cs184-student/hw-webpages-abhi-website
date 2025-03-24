@@ -55,8 +55,10 @@
 		</p>
 
 		<h2>Part 1: Ray Generation and Scene Intersection</h2>
-		
-		Ray generation and primitive intersection: Ray generation was difficult to me at first as it took me a considerable amount of time to conceptualize between the world to camera and camera to world spaces. However, the method by which we created our rays starts from finding the ray in our camera space, done through using our sensor coordinates and finding an according direction array. We then need to transform our ray into the world space given existing variables initialized for us in order to properly render the image in our world view. We also then used Monte Carlo integration to obtain averaged pixel values based on the radiance we received from different rays intersecting a pixel, which is important because this is more so closer to how it is perceived in reality.
+		<p>
+			Ray generation and primitive intersection: Ray generation was difficult to me at first as it took me a considerable amount of time to conceptualize between the world to camera and camera to world spaces. However, the method by which we created our rays starts from finding the ray in our camera space, done through using our sensor coordinates and finding an according direction array. We then need to transform our ray into the world space given existing variables initialized for us in order to properly render the image in our world view. We also then used Monte Carlo integration to obtain averaged pixel values based on the radiance we received from different rays intersecting a pixel, which is important because this is more so closer to how it is perceived in reality.
+
+		</p>
 
 		For the sphere intersection, our approach was more programmatic in the sense that we continuously used the discriminant in order to first determine how many intersection points we have (if there were any), and then use these values in conjunction with the normal vector from the center to obtain proper interpolation throughout our sphere.
 
@@ -65,13 +67,13 @@
 
 
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
+		<p>Here are some images! </p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
+				  <img src="/Users/abhisheksuresh/sp25-hw3-abhi-alexei/build/CBbunny.png" width="400px"/>
+				  <figcaption>Bunny!</figcaption>
 				</td>
 				<td style="text-align: center;">
 				  <img src="cornell.png" width="400px"/>
